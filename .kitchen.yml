@@ -1,0 +1,33 @@
+---
+driver:
+  name: vagrant
+
+verifier:
+  name: inspec
+
+provisioner:
+  name: chef_zero
+
+platforms:
+- name: centos-7.0
+  run_list: recipe[yum-epel]
+
+- name: centos-6.5
+  run_list: recipe[yum-epel]
+
+- name: ubuntu-16.04
+  run_list: recipe[apt]
+
+- name: ubuntu-14.04
+  run_list: recipe[apt]
+- name: debian-8.7
+
+  run_list: recipe[apt]
+
+suites:
+  - name: install_package
+    run_list:
+    - recipe[moriz_duplicity::default]
+    verifier:
+      inspec_tests:
+        - test/smoke/package

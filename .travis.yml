@@ -1,0 +1,30 @@
+sudo: required
+services: docker
+
+addons:
+  apt:
+    sources:
+      - chef-stable-trusty
+    packages:
+      - chefdk
+
+cache:
+  apt: true
+
+env:
+  matrix:
+    - INSTANCE=install-package-ubuntu-1604
+    - INSTANCE=install-package-debian-8
+    - INSTANCE=install-package-centos-7
+
+before_install:
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - chef --version
+  - docker --version
+
+install: echo "skip bundle install"
+
+script:
+  - chef exec cookstyle
+  - chef exec foodcritic .
+  - KITCHEN_LOCAL_YAML=.kitchen.dokken.yml /opt/chefdk/embedded/bin/kitchen verify ${INSTANCE}
